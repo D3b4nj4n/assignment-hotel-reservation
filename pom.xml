@@ -11,6 +11,7 @@
     <groupId>com.example</groupId>
     <artifactId>assignment-hotel-reservation</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
     <name>assignment-hotel-reservation</name>
     <description>assignment-hotel-reservation</description>
     <url/>
@@ -20,6 +21,12 @@
     <developers>
         <developer/>
     </developers>
+    <modules>
+        <module>hotel-reservation-repository</module>
+        <module>hotel-reservation-service</module>
+        <module>hotel-reservation-connector</module>
+        <module>hotel-reservation-app</module>
+    </modules>
     <scm>
         <connection/>
         <developerConnection/>
@@ -43,12 +50,25 @@
     </dependencies>
 
     <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                </plugin>
+                <plugin>
+                    <groupId>org.openapitools</groupId>
+                    <artifactId>openapi-generator-maven-plugin</artifactId>
+                    <version>3.0.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>7.4.0</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
     </build>
 
 </project>
