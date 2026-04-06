@@ -10,12 +10,14 @@ import com.example.hotelreservation.service.ConfirmReservationService;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 public class ConfirmReservationController implements ConfirmReservationApi {
 
     private final ConfirmReservationService confirmReservationService;
@@ -29,6 +31,7 @@ public class ConfirmReservationController implements ConfirmReservationApi {
             @Parameter(name = "ConfirmReservationRequest", description = "", required = true) @Valid @RequestBody ConfirmReservationRequest confirmReservationRequest
     ) {
 
+        log.info("inside controller confirmReservationPost");
         Room roomEntity = requestConverter.convert(confirmReservationRequest);
         Room room = confirmReservationService.confirmReservation(roomEntity);
         ConfirmReservationResponse response = responseConverter.convert(room);

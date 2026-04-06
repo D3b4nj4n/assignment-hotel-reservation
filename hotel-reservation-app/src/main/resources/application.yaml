@@ -1,4 +1,14 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /roomreservationapi/v1
 spring:
   application:
     name: assignment-hotel-reservation
-
+  datasource:
+    url: jdbc:h2:mem:mydb;DB_CLOSE_DELAY=-1
+    username: sa
+    password: password
+    driverClassName: org.h2.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
