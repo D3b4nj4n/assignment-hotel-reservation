@@ -4,7 +4,7 @@ info:
   description: API to retrieve status of the credit card payment
   version: 1.0.0
 servers:
-  - url: http//:localhost:9090/host/credit-card-payment-api
+  - url: http://localhost:9090/host/credit-card-payment-api
 paths:
   /payment-status:
     post:
