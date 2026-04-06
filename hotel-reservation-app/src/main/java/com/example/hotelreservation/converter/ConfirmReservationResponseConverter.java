@@ -1,0 +1,21 @@
+package com.example.hotelreservation.converter;
+
+import com.example.hotelreservation.entities.Room;
+import com.example.hotelreservation.openapi.model.ConfirmReservationResponse;
+import com.example.hotelreservation.openapi.model.Status;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
+
+@Component
+public class ConfirmReservationResponseConverter implements Converter<Room, ConfirmReservationResponse> {
+
+    @Override
+    public ConfirmReservationResponse convert(Room source) {
+
+        ConfirmReservationResponse response = new ConfirmReservationResponse();
+        response.setReservationId(source.getReservationId());
+        response.setStatus(Status.valueOf(source.getStatus().name()));
+        return response;
+
+    }
+}

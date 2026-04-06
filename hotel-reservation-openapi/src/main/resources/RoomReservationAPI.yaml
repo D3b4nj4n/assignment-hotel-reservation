@@ -22,7 +22,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RoomReservationResponse'
+                $ref: '#/components/schemas/ConfirmReservationResponse'
         '400':
           description: Invalid input
           content:
@@ -55,6 +55,15 @@ components:
         - CASH
         - BANK_TRANSFER
         - CREDIT_CARD
+
+    Status:
+      description: Status of the reservation
+      type: string
+      enum:
+        - PENDING_PAYMENT
+        - CONFIRMED
+        - CANCELLED
+
 
     ConfirmReservationRequest:
       type: object
@@ -96,7 +105,7 @@ components:
         - paymentMode
         - paymentReference
 
-    RoomReservationResponse:
+    ConfirmReservationResponse:
       type: object
       properties:
         reservationId:
@@ -106,13 +115,7 @@ components:
           example: a9c3b0ff-f78d-431a-8534-27249f4ceab0
 
         status:
-          type: string
-          format: enum
-            - PENDING_PAYMENT
-            - CONFIRMED
-            - CANCELLED
-          example: CONFIRMED
-          description: Status of the reservation
+          $ref: '#/components/schemas/Status'
 
     ErrorResponse:
       type: object

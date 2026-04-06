@@ -8,5 +8,13 @@
     </parent>
     <artifactId>hotel-reservation-repository</artifactId>
     <name>hotel-reservation-repository</name>
-    <url>http://maven.apache.org</url>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.example</groupId>
+            <artifactId>hotel-reservation-model</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+
 </project>

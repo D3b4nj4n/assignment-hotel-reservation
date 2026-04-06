@@ -8,7 +8,6 @@
     </parent>
     <artifactId>hotel-reservation-openapi</artifactId>
     <name>hotel-reservation-openapi</name>
-    <url>http://maven.apache.org</url>
 
     <dependencies>
         <dependency>
@@ -52,8 +51,8 @@
                             <inputSpec>${project.basedir}/src/main/resources/RoomReservationAPI.yaml</inputSpec>
                             <generatorName>spring</generatorName>
                             <output>${project.build.directory}/generated-sources</output>
-                            <modelPackage>com.example.assignmenthotelreservation.openapi.model</modelPackage>
-                            <apiPackage>com.example.assignmenthotelreservation.openapi</apiPackage>
+                            <modelPackage>com.example.hotelreservation.openapi.model</modelPackage>
+                            <apiPackage>com.example.hotelreservation.openapi</apiPackage>
                             <typeMappings>
                                 <typeMapping>OffsetDateTime=java.lang.String</typeMapping>
                             </typeMappings>
