@@ -1,0 +1,12 @@
+{
+  "sourceFolder": "src/main/java",
+  "dateLibrary": "java8",
+  "library": "restclient",
+  "openApiNullable": false,
+  "useJakartaEe": true,
+  "documentationProvider": "none",
+  "interfaceOnly": true,
+  "useResponseEntity": false,
+  "useBeanValidation": false,
+  "generatedConstructorWithRequiredArgs": false
+}

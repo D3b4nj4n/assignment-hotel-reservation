@@ -9,4 +9,61 @@
     <artifactId>hotel-reservation-connector</artifactId>
     <name>hotel-reservation-connector</name>
     <url>http://maven.apache.org</url>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.annotation</groupId>
+            <artifactId>jakarta.annotation-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <configuration>
+                    <addCompileSourceRoot>true</addCompileSourceRoot>
+                    <generateApiTests>false</generateApiTests>
+                    <generateModelTests>false</generateModelTests>
+                    <generateApiDocumentation>false</generateApiDocumentation>
+                    <generateModelDocumentation>false</generateModelDocumentation>
+                    <generatorName>java</generatorName>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>generate-creditcard-payment-api</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <configurationFile>${project.basedir}/src/main/resources/openapi-generator.config.json</configurationFile>
+                            <inputSpec>${project.basedir}/src/main/resources/Assignment02_creditcardpayment_api.yaml</inputSpec>
+                            <output>${project.build.directory}/generated-sources/creditcardpaymentapi</output>
+                            <modelPackage>com.example.creditcardpayment.model</modelPackage>
+                            <apiPackage>com.example.creditcardpayment.api</apiPackage>
+                            <invokerPackage>com.example.creditcardpayment.rest.invoker</invokerPackage>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>

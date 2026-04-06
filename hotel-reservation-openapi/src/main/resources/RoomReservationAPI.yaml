@@ -1,0 +1,122 @@
+openapi: 3.0.3
+info:
+  title: Room Reservation API
+  description: API to reserve a room
+  version: 1.0.0
+servers:
+  - url: http//:localhost:8080/roomreservationapi/v1
+paths:
+  /confirm-reservation:
+    post:
+      summary: Confirm a room reservation
+      description: Accepts a room reservation request and processes it to confirm or cancel
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfirmReservationRequest'
+      responses:
+        '200':
+          description: Successful response with reservation details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoomReservationResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: Internal server error
+components:
+  schemas:
+    RoomSegment:
+      description: type of room
+      type: string
+      enum:
+        - SMALL
+        - MEDIUM
+        - LARGE
+        - EXTRA_LARGE
+
+    PaymentMode:
+      description: Mode of payment
+      type: string
+      enum:
+        - CASH
+        - BANK_TRANSFER
+        - CREDIT_CARD
+
+    ConfirmReservationRequest:
+      type: object
+      properties:
+        customerName:
+          type: string
+          description: Name of the customer
+          maxLength: 256
+          example: John Doe
+        roomNumber:
+          type: integer
+          description: Number the room being reserved
+          example: 101
+        startDate:
+          type: string
+          format: date
+          description: Start date of the reservation
+          example: "2026-04-06"
+        endDate:
+          type: string
+          format: date
+          description: End date of the reservation
+          example: "2026-04-010"
+        roomSegment:
+          $ref: '#/components/schemas/RoomSegment'
+        paymentMode:
+          $ref: '#/components/schemas/PaymentMode'
+        paymentReference:
+          type: string
+          description: Payment reference
+          maxLength: 64
+          example: ABCDE10002345
+      required:
+        - customerName
+        - roomNumber
+        - startDate
+        - endDate
+        - roomSegment
+        - paymentMode
+        - paymentReference
+
+    RoomReservationResponse:
+      type: object
+      properties:
+        reservationId:
+          type: string
+          description: Unique id of the reservation
+          format: uuid
+          example: a9c3b0ff-f78d-431a-8534-27249f4ceab0
+
+        status:
+          type: string
+          format: enum
+            - PENDING_PAYMENT
+            - CONFIRMED
+            - CANCELLED
+          example: CONFIRMED
+          description: Status of the reservation
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message

@@ -1,0 +1,13 @@
+{
+  "sourceFolder": "src/main/java",
+  "dateLibrary": "java8",
+  "library": "spring-boot",
+  "openApiNullable": false,
+  "interfaceOnly": true,
+  "useBeanValidation": true,
+  "sortParamsByRequiredFlag": false,
+  "jackson": true,
+  "skipDefaultInterface": true,
+  "generatedConstructorWithRequiredArgs": false,
+  "useSpringBoot3": true
+}
