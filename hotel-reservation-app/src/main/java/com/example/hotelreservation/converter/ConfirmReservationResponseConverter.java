@@ -2,6 +2,7 @@ package com.example.hotelreservation.converter;
 
 import com.example.hotelreservation.entities.Room;
 import com.example.hotelreservation.openapi.model.ConfirmReservationResponse;
+import com.example.hotelreservation.openapi.model.Status;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
@@ -16,8 +17,7 @@ public class ConfirmReservationResponseConverter implements Converter<Room, Conf
         log.info("inside response converter");
         ConfirmReservationResponse response = new ConfirmReservationResponse();
         response.setReservationId(source.getReservationId());
-        //TODO: fix this npe, use the logic provided to call payment api then map it
-        //response.setStatus(Status.valueOf(source.getStatus().name()));
+        response.setStatus(Status.valueOf(source.getStatus().name()));
         return response;
 
     }

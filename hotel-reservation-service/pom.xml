@@ -18,6 +18,10 @@
             <groupId>com.example</groupId>
             <artifactId>hotel-reservation-exception</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.example</groupId>
+            <artifactId>hotel-reservation-connector</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

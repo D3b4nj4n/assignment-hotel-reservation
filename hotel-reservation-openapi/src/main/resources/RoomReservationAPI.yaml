@@ -45,6 +45,7 @@ components:
     RoomSegment:
       description: type of room
       type: string
+      nullable: false
       enum:
         - SMALL
         - MEDIUM
@@ -54,6 +55,7 @@ components:
     PaymentMode:
       description: Mode of payment
       type: string
+      nullable: false
       enum:
         - CASH
         - BANK_TRANSFER
@@ -62,6 +64,7 @@ components:
     Status:
       description: Status of the reservation
       type: string
+      nullable: false
       enum:
         - PENDING_PAYMENT
         - CONFIRMED
@@ -74,20 +77,26 @@ components:
         customerName:
           type: string
           description: Name of the customer
-          maxLength: 256
+          minLength: 2
+          maxLength: 128
+          nullable: false
           example: John Doe
         roomNumber:
           type: integer
+          nullable: false
+          maximum: 999
           description: Number the room being reserved
           example: 101
         startDate:
           type: string
           format: date
+          nullable: false
           description: Start date of the reservation
           example: "2026-04-06"
         endDate:
           type: string
           format: date
+          nullable: false
           description: End date of the reservation
           example: "2026-04-010"
         roomSegment:

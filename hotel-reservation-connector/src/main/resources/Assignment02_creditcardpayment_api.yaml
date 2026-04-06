@@ -66,11 +66,11 @@ components:
           example: 2017-07-21T17:32:28Z
         status:
           type: string
-          format: enum
+          enum:
             - CONFIRMED
             - REJECTED
           example: CONFIRMED
-          description: Expiry date of the driving license
+          description: Status of the payment
           
     ErrorResponse:
       type: object

@@ -5,7 +5,7 @@
   "openApiNullable": false,
   "useJakartaEe": true,
   "documentationProvider": "none",
-  "interfaceOnly": true,
+  "interfaceOnly": false,
   "useResponseEntity": false,
   "useBeanValidation": false,
   "generatedConstructorWithRequiredArgs": false

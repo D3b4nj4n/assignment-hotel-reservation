@@ -1,12 +1,16 @@
 package com.example.hotelreservation.service;
 
+import com.example.creditcardpayment.model.PaymentStatusResponse;
+import com.example.hotelreservation.connector.CreditCardPaymentConnector;
 import com.example.hotelreservation.entities.Room;
+import com.example.hotelreservation.exception.ExceptionType;
 import com.example.hotelreservation.exception.ReservationException;
 import com.example.hotelreservation.model.Status;
 import com.example.hotelreservation.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -18,38 +22,52 @@ public class ConfirmReservationService {
 
     private final RoomRepository roomRepository;
 
+    private final CreditCardPaymentConnector creditCardPaymentConnector;
+
     public Room confirmReservation(Room room) {
+
         log.info("inside confirmReservation service layer");
 
         validate(room);
 
-
         switch (room.getPaymentMode()) {
-            case CASH -> {
-                log.info("CASH chosen as Payment mode");
-                room.setStatus(Status.CONFIRMED);
-            }
-            case BANK_TRANSFER -> {
-                log.info("BANK_TRANSFER chosen as Payment mode");
-                room.setStatus(Status.PENDING_PAYMENT);
-            }
-            case CREDIT_CARD -> log.info("CREDIT_CARD chosen as Payment mode");
-            //TODO: Call credit-card-payment-service
-            //to retrieve the status of the payment. If credit payment is confirmed, then
-            //confirm the room else throw an error
-
+            case CASH -> room.setStatus(Status.CONFIRMED);
+            case BANK_TRANSFER -> room.setStatus(Status.PENDING_PAYMENT);
+            case CREDIT_CARD -> processReservationForCreditCard(room);
         }
-
         return roomRepository.save(room);
     }
 
+    private void processReservationForCreditCard(Room room) {
+
+        PaymentStatusResponse paymentStatus;
+        try {
+            paymentStatus = creditCardPaymentConnector.getPaymentStatus(room.getPaymentReference());
+        } catch (RestClientException e) {
+            throw new ReservationException(e.getLocalizedMessage(), ExceptionType.SERVER_ERROR);
+        }
+        if (null == paymentStatus || null == paymentStatus.getStatus()) {
+            throw new RestClientException("Unable to retrieve credit card payment status");
+        }
+
+        switch (paymentStatus.getStatus()) {
+            case CONFIRMED -> {
+                log.info("Credit card payment status is CONFIRMED for paymentReference {}", room.getPaymentReference());
+                room.setStatus(Status.CONFIRMED);
+            }
+            case REJECTED -> {
+                log.info("Credit card payment status is REJECTED for paymentReference {}", room.getPaymentReference());
+                throw new ReservationException("Credit card payment status is REJECTED for paymentReference: " + room.getPaymentReference(), ExceptionType.SERVER_ERROR);
+            }
+        }
+    }
+
     private void validate(Room room) {
-        log.info("inside validate service layer");
         LocalDate startDate = room.getStartDate();
         LocalDate endDate = room.getEndDate();
         long daysBetween = ChronoUnit.DAYS.between(startDate, endDate);
         if (daysBetween > 30) {
-            throw new ReservationException("Room cannot be reserved for more than 30 days");
+            throw new ReservationException("Room cannot be reserved for more than 30 days", ExceptionType.BAD_REQUEST);
         }
     }
 
