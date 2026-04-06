@@ -1,6 +1,7 @@
 package com.example.hotelreservation.service;
 
 import com.example.hotelreservation.entities.Room;
+import com.example.hotelreservation.exception.ReservationException;
 import com.example.hotelreservation.model.Status;
 import com.example.hotelreservation.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
@@ -8,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 @Slf4j
@@ -48,8 +48,8 @@ public class ConfirmReservationService {
         LocalDate startDate = room.getStartDate();
         LocalDate endDate = room.getEndDate();
         long daysBetween = ChronoUnit.DAYS.between(startDate, endDate);
-        if(daysBetween > 30) {
-            throw new RuntimeException("Room cannot be reserved for more than 30 days");
+        if (daysBetween > 30) {
+            throw new ReservationException("Room cannot be reserved for more than 30 days");
         }
     }
 

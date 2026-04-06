@@ -8,11 +8,13 @@ import com.example.hotelreservation.openapi.model.ConfirmReservationRequest;
 import com.example.hotelreservation.openapi.model.ConfirmReservationResponse;
 import com.example.hotelreservation.service.ConfirmReservationService;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -27,7 +29,8 @@ public class ConfirmReservationController implements ConfirmReservationApi {
     private final ConfirmReservationResponseConverter responseConverter;
 
     @Override
-    public ResponseEntity<ConfirmReservationResponse> confirmReservationPost(
+    public ResponseEntity<ConfirmReservationResponse> confirmReservation(
+            @Parameter(name = "Trace-Id", description = "Id to trace the request end-to-end", in = ParameterIn.HEADER) @RequestHeader(value = "Trace-Id", required = false) String traceId,
             @Parameter(name = "ConfirmReservationRequest", description = "", required = true) @Valid @RequestBody ConfirmReservationRequest confirmReservationRequest
     ) {
 

@@ -10,6 +10,9 @@ paths:
     post:
       summary: Confirm a room reservation
       description: Accepts a room reservation request and processes it to confirm or cancel
+      operationId: confirmReservation
+      parameters:
+        - $ref: '#/components/parameters/Trace-Id'
       requestBody:
         required: true
         content:
@@ -64,9 +67,9 @@ components:
         - CONFIRMED
         - CANCELLED
 
-
     ConfirmReservationRequest:
       type: object
+      description: Request body
       properties:
         customerName:
           type: string
@@ -123,3 +126,18 @@ components:
         error:
           type: string
           description: Error message
+          example: This is not allowed
+        trace-id:
+          type: string
+          description: The trace-id passed in the request
+          example: b5e4b0ff-f09d-156a-aa54-c7d89f4ceab0
+
+  parameters:
+    Trace-Id:
+      in: header
+      name: Trace-Id
+      description: Id to trace the request end-to-end
+      required: false
+      schema:
+        type: string
+        example: b5e4b0ff-f09d-156a-aa54-c7d89f4ceab0

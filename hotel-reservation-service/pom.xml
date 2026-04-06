@@ -14,6 +14,10 @@
             <groupId>com.example</groupId>
             <artifactId>hotel-reservation-repository</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.example</groupId>
+            <artifactId>hotel-reservation-exception</artifactId>
+        </dependency>
     </dependencies>
 
 </project>
