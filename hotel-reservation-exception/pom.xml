@@ -6,14 +6,6 @@
         <artifactId>assignment-hotel-reservation</artifactId>
         <version>${revision}</version>
     </parent>
-    <artifactId>hotel-reservation-repository</artifactId>
-    <name>hotel-reservation-repository</name>
-
-    <dependencies>
-        <dependency>
-            <groupId>com.example</groupId>
-            <artifactId>hotel-reservation-model</artifactId>
-        </dependency>
-    </dependencies>
-
+    <artifactId>hotel-reservation-exception</artifactId>
+    <name>hotel-reservation-exception</name>
 </project>

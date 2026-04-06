@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.example</groupId>
         <artifactId>assignment-hotel-reservation</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>${revision}</version>
     </parent>
     <artifactId>hotel-reservation-service</artifactId>
     <name>hotel-reservation-service</name>
@@ -13,7 +13,6 @@
         <dependency>
             <groupId>com.example</groupId>
             <artifactId>hotel-reservation-repository</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
