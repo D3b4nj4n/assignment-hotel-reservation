@@ -14,7 +14,6 @@ public class ConfirmReservationResponseConverter implements Converter<Room, Conf
     @Override
     public ConfirmReservationResponse convert(Room source) {
 
-        log.info("inside response converter");
         ConfirmReservationResponse response = new ConfirmReservationResponse();
         response.setReservationId(source.getReservationId());
         response.setStatus(Status.valueOf(source.getStatus().name()));

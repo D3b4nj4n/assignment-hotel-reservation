@@ -26,8 +26,6 @@ public class ConfirmReservationService {
 
     public Room confirmReservation(Room room) {
 
-        log.info("inside confirmReservation service layer");
-
         validate(room);
 
         switch (room.getPaymentMode()) {

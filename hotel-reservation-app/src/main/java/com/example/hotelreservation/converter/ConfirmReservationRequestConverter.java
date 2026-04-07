@@ -17,8 +17,6 @@ public class ConfirmReservationRequestConverter implements Converter<ConfirmRese
     @Override
     public Room convert(ConfirmReservationRequest source) {
 
-        log.info("inside request converter");
-
         Room room = new Room();
         room.setReservationId(UUID.randomUUID());
         room.setCustomerName(source.getCustomerName());
@@ -30,6 +28,6 @@ public class ConfirmReservationRequestConverter implements Converter<ConfirmRese
         room.setPaymentReference(source.getPaymentReference());
 
         return room;
-
     }
+
 }

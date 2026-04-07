@@ -34,7 +34,6 @@ public class ConfirmReservationController implements ConfirmReservationApi {
             @Parameter(name = "ConfirmReservationRequest", description = "", required = true) @Valid @RequestBody ConfirmReservationRequest confirmReservationRequest
     ) {
 
-        log.info("inside controller confirmReservationPost");
         Room roomEntity = requestConverter.convert(confirmReservationRequest);
         Room room = confirmReservationService.confirmReservation(roomEntity);
         ConfirmReservationResponse response = responseConverter.convert(room);
