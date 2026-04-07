@@ -15,6 +15,9 @@ import org.springframework.kafka.support.serializer.JsonDeserializer;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Kafka consumer configuration for processing bank transfer payment events.
+ */
 @EnableKafka
 @Configuration
 public class KafkaConsumerConfig {
@@ -25,6 +28,16 @@ public class KafkaConsumerConfig {
     @Value("${spring.kafka.consumer.group-id}")
     private String groupId;
 
+    /**
+     * Creates a {@link ConsumerFactory} configured to consume {@link BankTransferPaymentEvent}
+     * messages with a {@link StringDeserializer} for keys and a {@link JsonDeserializer} for values.
+     *
+     * <p>The consumer is set to reset offsets to {@code earliest} so no events are missed on startup.
+     * Type info headers are disabled so the deserializer always maps the payload to {@link BankTransferPaymentEvent}
+     * regardless of the producer's type headers.
+     *
+     * @return a fully configured {@link ConsumerFactory} for bank transfer payment events
+     */
     public ConsumerFactory<String, BankTransferPaymentEvent> bankTransferConsumerFactory() {
 
         Map<String, Object> props = new HashMap<>();
@@ -44,8 +57,17 @@ public class KafkaConsumerConfig {
         );
     }
 
+    /**
+     * Creates a {@link ConcurrentKafkaListenerContainerFactory} backed by {@link #bankTransferConsumerFactory()}.
+     *
+     * <p>Listener methods annotated with {@code @KafkaListener(containerFactory = "bankTransferKafkaListenerContainerFactory")}
+     * will use this factory to consume and deserialize bank transfer payment events.
+     *
+     * @return a {@link ConcurrentKafkaListenerContainerFactory} for bank transfer payment events
+     */
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, BankTransferPaymentEvent> bankTransferKafkaListenerContainerFactory() {
+
         ConcurrentKafkaListenerContainerFactory<String, BankTransferPaymentEvent> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(bankTransferConsumerFactory());

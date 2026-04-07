@@ -13,6 +13,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Service responsible for confirming hotel reservations upon receipt of a bank transfer payment event.
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -20,6 +23,25 @@ public class BankTransferPaymentService {
 
     private final RoomRepository roomRepository;
 
+    /**
+     * Processes a {@link BankTransferPaymentEvent} and confirms the associated reservation.
+     *
+     * <p>The following validations are applied in order:
+     * <ol>
+     *   <li>The {@code transactionDescription} must contain a reservation ID;
+     *       otherwise a {@link ReservationException} with {@code BAD_REQUEST} is thrown.</li>
+     *   <li>A {@link Room} with the extracted reservation ID must exist;
+     *       otherwise a {@link ReservationException} with {@code NOT_FOUND} is thrown.</li>
+     *   <li>The room's payment mode must be {@link PaymentMode#BANK_TRANSFER};
+     *       otherwise a {@link ReservationException} with {@code BAD_REQUEST} is thrown.</li>
+     *   <li>If the reservation is already {@link Status#CONFIRMED}, the event is ignored.</li>
+     *   <li>If the reservation is {@link Status#CANCELLED}, a {@link ReservationException}
+     *       with {@code BAD_REQUEST} is thrown.</li>
+     * </ol>
+     *
+     * @param event the bank transfer payment event to process
+     * @throws ReservationException if the event is invalid or the reservation cannot be confirmed
+     */
     @Transactional
     public void processPaymentUpdate(BankTransferPaymentEvent event) {
 
@@ -44,6 +66,7 @@ public class BankTransferPaymentService {
                             ExceptionType.NOT_FOUND);
                 });
 
+        //check if paymentMode is BANK_TRANSFER
         if (PaymentMode.BANK_TRANSFER != room.getPaymentMode()) {
             log.warn("Reservation: '{}' has paymentMode: '{}', expected BANK_TRANSFER. Skipping confirmation.",
                     reservationId, room.getPaymentMode());
@@ -52,13 +75,14 @@ public class BankTransferPaymentService {
                     ExceptionType.BAD_REQUEST);
         }
 
-        //check the status
+        //check if status is CONFIRMED
         if (Status.CONFIRMED == room.getStatus()) {
             log.warn("Reservation: '{}' is already CONFIRMED. Duplicate payment event paymentId: '{}' to be ignored.",
                     reservationId, event.getPaymentId());
             return;
         }
 
+        //check if the status is CANCELLED
         if (Status.CANCELLED == room.getStatus()) {
             log.warn("Reservation: '{}' is CANCELLED. Payment event paymentId: '{}' cannot confirm a cancelled reservation.",
                     reservationId, event.getPaymentId());
