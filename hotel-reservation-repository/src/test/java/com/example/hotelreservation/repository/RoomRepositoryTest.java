@@ -126,7 +126,7 @@ class RoomRepositoryTest {
                 Status.PENDING_PAYMENT, PaymentMode.BANK_TRANSFER, deadline);
 
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).getReservationId()).isEqualTo("BTPEND001");
+        assertThat(result.getFirst().getReservationId()).isEqualTo("BTPEND001");
     }
 
     @Test
