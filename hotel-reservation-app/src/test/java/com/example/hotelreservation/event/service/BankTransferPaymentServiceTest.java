@@ -38,7 +38,7 @@ class BankTransferPaymentServiceTest {
         event.setPaymentId("pay-001");
         event.setDebtorAccountNumber("NL12BANK0123456789");
         event.setAmountReceived("150.00");
-        event.setTransactionDescription("E2EREFERENCE RES12345");
+        event.setTransactionDescription("E2EREFERAB RES12345");
 
         room = new Room();
         room.setReservationId("RES12345");
