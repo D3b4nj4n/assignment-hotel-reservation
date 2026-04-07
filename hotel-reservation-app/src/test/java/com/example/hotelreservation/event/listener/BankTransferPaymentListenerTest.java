@@ -5,7 +5,6 @@ import com.example.hotelreservation.event.service.BankTransferPaymentService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.test.context.EmbeddedKafka;
@@ -16,9 +15,9 @@ import static org.mockito.ArgumentMatchers.argThat;
 @SpringBootTest
 @EmbeddedKafka(
         partitions = 1,
-        topics = {BankTransferPaymentListener.TOPIC}
+        topics = {BankTransferPaymentListener.TOPIC},
+        bootstrapServersProperty = "spring.kafka.bootstrap-servers" //this tells the embedded broker to set spring.kafka.bootstrap-servers to its own address directly, scoped only to this test.
 )
-@EnableAutoConfiguration
 class BankTransferPaymentListenerTest {
 
     @Autowired

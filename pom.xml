@@ -23,7 +23,6 @@
         <module>hotel-reservation-openapi</module>
         <module>hotel-reservation-model</module>
         <module>hotel-reservation-exception</module>
-        <module>hotel-reservation-event</module>
     </modules>
 
     <properties>
@@ -67,6 +66,11 @@
             <dependency>
                 <groupId>com.example</groupId>
                 <artifactId>hotel-reservation-exception</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.example</groupId>
+                <artifactId>hotel-reservation-event</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>
