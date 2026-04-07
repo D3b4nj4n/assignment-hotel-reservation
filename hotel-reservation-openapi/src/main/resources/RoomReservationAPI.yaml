@@ -123,8 +123,8 @@ components:
         reservationId:
           type: string
           description: Unique id of the reservation
-          format: uuid
-          example: a9c3b0ff-f78d-431a-8534-27249f4ceab0
+          pattern: '^[A-Za-z0-9]{8}$'
+          example: aB3dE7gH
 
         status:
           $ref: '#/components/schemas/Status'

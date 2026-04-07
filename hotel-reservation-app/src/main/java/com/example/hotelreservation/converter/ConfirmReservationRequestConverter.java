@@ -8,8 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
-import java.util.UUID;
-
 @Slf4j
 @Component
 public class ConfirmReservationRequestConverter implements Converter<ConfirmReservationRequest, Room> {
@@ -18,7 +16,6 @@ public class ConfirmReservationRequestConverter implements Converter<ConfirmRese
     public Room convert(ConfirmReservationRequest source) {
 
         Room room = new Room();
-        room.setReservationId(UUID.randomUUID());
         room.setCustomerName(source.getCustomerName());
         room.setRoomNumber(source.getRoomNumber());
         room.setStartDate(source.getStartDate());

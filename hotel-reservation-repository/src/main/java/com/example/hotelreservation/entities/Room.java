@@ -10,14 +10,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 @Entity
 @Getter
 @Setter
 public class Room {
     @Id
-    private UUID reservationId;
+    private String reservationId;
 
     private String customerName;
 

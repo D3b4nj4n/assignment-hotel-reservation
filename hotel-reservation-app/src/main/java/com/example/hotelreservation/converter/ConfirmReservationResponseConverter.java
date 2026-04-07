@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
+import java.util.Locale;
+
 @Slf4j
 @Component
 public class ConfirmReservationResponseConverter implements Converter<Room, ConfirmReservationResponse> {
@@ -15,7 +17,7 @@ public class ConfirmReservationResponseConverter implements Converter<Room, Conf
     public ConfirmReservationResponse convert(Room source) {
 
         ConfirmReservationResponse response = new ConfirmReservationResponse();
-        response.setReservationId(source.getReservationId());
+        response.setReservationId(source.getReservationId().toUpperCase(Locale.ENGLISH));
         response.setStatus(Status.valueOf(source.getStatus().name()));
         return response;
 

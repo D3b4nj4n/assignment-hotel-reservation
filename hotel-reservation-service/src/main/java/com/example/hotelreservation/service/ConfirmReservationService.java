@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 
+import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
@@ -19,6 +20,9 @@ import java.time.temporal.ChronoUnit;
 @Service
 @RequiredArgsConstructor
 public class ConfirmReservationService {
+
+    private static final String ALPHANUMERIC = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    private static final SecureRandom RANDOM = new SecureRandom();
 
     private final RoomRepository roomRepository;
 
@@ -28,12 +32,25 @@ public class ConfirmReservationService {
 
         validate(room);
 
+        room.setReservationId(generateUniqueReservationId());
         switch (room.getPaymentMode()) {
             case CASH -> room.setStatus(Status.CONFIRMED);
             case BANK_TRANSFER -> room.setStatus(Status.PENDING_PAYMENT);
             case CREDIT_CARD -> processReservationForCreditCard(room);
         }
         return roomRepository.save(room);
+    }
+
+    private String generateUniqueReservationId() {
+        String id;
+        do {
+            StringBuilder sb = new StringBuilder(8);
+            for (int i = 0; i < 8; i++) {
+                sb.append(ALPHANUMERIC.charAt(RANDOM.nextInt(ALPHANUMERIC.length())));
+            }
+            id = sb.toString();
+        } while (roomRepository.existsById(id));
+        return id;
     }
 
     private void processReservationForCreditCard(Room room) {
