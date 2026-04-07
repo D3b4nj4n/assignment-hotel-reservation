@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -87,4 +88,54 @@ class RoomRepositoryTest {
 
         assertThat(roomRepository.existsById("dE6fG8hI")).isFalse();
     }
+
+    @Test
+    void findByStatusAndPaymentModeAndStartDateLessThanEqual_returnsPendingBankTransferRoomsBeforeDeadline() {
+
+        // BANK_TRANSFER + PENDING_PAYMENT, start date BEFORE deadline -> should be returned
+        Room eligibleRoom = buildRoom("BTPEND001");
+        eligibleRoom.setPaymentMode(PaymentMode.BANK_TRANSFER);
+        eligibleRoom.setStatus(Status.PENDING_PAYMENT);
+        eligibleRoom.setStartDate(LocalDate.of(2026, 5, 1));
+        roomRepository.save(eligibleRoom);
+
+        // BANK_TRANSFER + PENDING_PAYMENT, start date AFTER deadline -> should NOT be returned
+        Room futureRoom = buildRoom("BTPEND002");
+        futureRoom.setPaymentMode(PaymentMode.BANK_TRANSFER);
+        futureRoom.setStatus(Status.PENDING_PAYMENT);
+        futureRoom.setStartDate(LocalDate.of(2026, 5, 10));
+        roomRepository.save(futureRoom);
+
+        // BANK_TRANSFER + CONFIRMED -> should NOT be returned
+        Room confirmedRoom = buildRoom("BTCONF001");
+        confirmedRoom.setPaymentMode(PaymentMode.BANK_TRANSFER);
+        confirmedRoom.setStatus(Status.CONFIRMED);
+        confirmedRoom.setStartDate(LocalDate.of(2026, 5, 1));
+        roomRepository.save(confirmedRoom);
+
+        // CASH + PENDING_PAYMENT -> should NOT be returned
+        Room cashRoom = buildRoom("CASHPD001");
+        cashRoom.setPaymentMode(PaymentMode.CASH);
+        cashRoom.setStatus(Status.PENDING_PAYMENT);
+        cashRoom.setStartDate(LocalDate.of(2026, 5, 1));
+        roomRepository.save(cashRoom);
+
+        LocalDate deadline = LocalDate.of(2026, 5, 3); // +2 days from today (2026-05-01)
+
+        List<Room> result = roomRepository.findByStatusAndPaymentModeAndStartDateLessThanEqual(
+                Status.PENDING_PAYMENT, PaymentMode.BANK_TRANSFER, deadline);
+
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).getReservationId()).isEqualTo("BTPEND001");
+    }
+
+    @Test
+    void findByStatusAndPaymentModeAndStartDateLessThanEqual_returnsEmpty_whenNoPendingBankTransferRooms() {
+        List<Room> result = roomRepository.findByStatusAndPaymentModeAndStartDateLessThanEqual(
+                Status.PENDING_PAYMENT, PaymentMode.BANK_TRANSFER, LocalDate.of(2026, 5, 3));
+
+        assertThat(result).isEmpty();
+    }
+
+
 }

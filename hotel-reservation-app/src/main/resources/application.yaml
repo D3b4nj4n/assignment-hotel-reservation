@@ -30,3 +30,9 @@ spring:
 credit-card-payment-api:
 #  base-url: http://localhost:9090/host/credit-card-payment-api
   base-url: https://eefcd287-c5b1-416b-9323-632244c15778.mock.pstmn.io/host/credit-card-payment-api  #update this with mock server url from postman - or write wiremock standalone or real implementation
+
+#Runs daily at midnight - checks for auto cancellation of reservation
+reservation:
+  cancellation:
+    deadlineDays: 2
+    cron: "0 0 0 * * *"
