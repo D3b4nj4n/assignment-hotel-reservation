@@ -133,7 +133,7 @@ BankTransferReservationCancellationService ──► cancel overdue PENDING_PAYM
 ### Step 1 — Clone and build
 
 ```bash
-git clone [My github repository](https://github.com/D3b4nj4n/assignment-hotel-reservation.git)
+git clone https://github.com/D3b4nj4n/assignment-hotel-reservation.git
 cd assignment-hotel-reservation
 ./mvnw clean install
 ```
