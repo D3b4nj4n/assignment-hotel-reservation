@@ -11,6 +11,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.example</groupId>
+            <artifactId>hotel-reservation-exception</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>
