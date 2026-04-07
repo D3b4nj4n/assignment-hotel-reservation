@@ -4,6 +4,7 @@ import com.example.hotelreservation.model.PaymentMode;
 import com.example.hotelreservation.model.RoomSegment;
 import com.example.hotelreservation.model.Status;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import lombok.Getter;
@@ -26,15 +27,15 @@ public class Room {
 
     private LocalDate endDate;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private RoomSegment roomSegment;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private PaymentMode paymentMode;
 
     private String paymentReference;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private Status status;
 
 }

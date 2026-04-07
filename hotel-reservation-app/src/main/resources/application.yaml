@@ -10,15 +10,15 @@ spring:
     name: assignment-hotel-reservation
   datasource:
     url: jdbc:h2:mem:mydb;DB_CLOSE_DELAY=-1
-    username:
+    username: sa
     password:
     driverClassName: org.h2.Driver
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
   h2:
     console:
-      enabled: true
       path: /h2-console
+      enabled: true
   kafka:
     bootstrap-servers: localhost:9092
     consumer:
@@ -32,8 +32,8 @@ spring:
 #        spring.json.use.type.headers: false
 
 credit-card-payment-api:
-#  base-url: http://localhost:9090/host/credit-card-payment-api
-  base-url: https://eefcd287-c5b1-416b-9323-632244c15778.mock.pstmn.io/host/credit-card-payment-api  #update this with mock server url from postman - or write wiremock standalone or real implementation
+  base-url: http://localhost:9090/host/credit-card-payment-api
+#  base-url: https://eefcd287-c5b1-416b-9323-632244c15778.mock.pstmn.io/host/credit-card-payment-api  #update this with Postman mock server url - or use wiremock standalone or real implementation
 
 #Runs daily at midnight - checks for auto cancellation of reservation
 reservation:

@@ -368,7 +368,7 @@ spring:
       path: /h2-console
 ```
 
-Then open: `http://localhost:8080/h2-console`
+Then open: `http://localhost:8080/roomreservationapi/v1/h2-console`
 
 Log in with:
 - JDBC URL: `jdbc:h2:mem:mydb`

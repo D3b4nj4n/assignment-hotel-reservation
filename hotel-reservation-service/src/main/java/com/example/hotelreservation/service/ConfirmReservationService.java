@@ -118,6 +118,19 @@ public class ConfirmReservationService {
     private void validate(Room room) {
         LocalDate startDate = room.getStartDate();
         LocalDate endDate = room.getEndDate();
+
+        if (endDate.isBefore(startDate)) {
+            throw new ReservationException("End date is before start date", ExceptionType.BAD_REQUEST);
+        }
+
+        if (startDate.isBefore(LocalDate.now())) {
+            throw new ReservationException("Cannot reserve room for past dates", ExceptionType.BAD_REQUEST);
+        }
+
+        if (startDate.isAfter(LocalDate.now().plusYears(1))) {
+            throw new ReservationException("Cannot reserve rooms after 1 year from today", ExceptionType.BAD_REQUEST);
+        }
+
         long daysBetween = ChronoUnit.DAYS.between(startDate, endDate);
         if (daysBetween > 30) {
             throw new ReservationException("Room cannot be reserved for more than 30 days", ExceptionType.BAD_REQUEST);
