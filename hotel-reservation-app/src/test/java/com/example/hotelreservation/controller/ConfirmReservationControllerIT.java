@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 )
 class ConfirmReservationControllerIT {
 
-    private static final String ENDPOINT = "/roomreservationapi/v1/confirm-reservation";
+    private static final String ENDPOINT = "/confirm-reservation";
 
     @RegisterExtension
     static WireMockExtension wireMock = WireMockExtension.newInstance()
