@@ -15,6 +15,17 @@ spring:
     driverClassName: org.h2.Driver
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: hotel-reservation-group
+#      auto-offset-reset: earliest
+#      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+#      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+#      properties:
+#        spring.json.trusted.packages: "com.example.hotelreservation.model"
+#        spring.json.value.default.type: "com.example.hotelreservation.model.BankTransferPaymentEvent"
+#        spring.json.use.type.headers: false
 
 credit-card-payment-api:
   #base-url: http://localhost:9090/host/credit-card-payment-api
