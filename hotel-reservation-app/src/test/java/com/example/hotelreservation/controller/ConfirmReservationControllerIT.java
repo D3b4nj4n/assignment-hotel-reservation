@@ -1,6 +1,5 @@
 package com.example.hotelreservation.controller;
 
-import com.example.hotelreservation.event.listener.BankTransferPaymentListener;
 import com.example.hotelreservation.openapi.model.*;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import org.junit.jupiter.api.Test;
@@ -10,7 +9,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
@@ -22,11 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@EmbeddedKafka(
-        partitions = 1,
-        topics = {BankTransferPaymentListener.TOPIC},
-        bootstrapServersProperty = "spring.kafka.bootstrap-servers"
-)
 class ConfirmReservationControllerIT {
 
     private static final String ENDPOINT = "/confirm-reservation";
