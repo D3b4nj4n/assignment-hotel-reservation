@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -19,6 +20,7 @@ public class BankTransferPaymentService {
 
     private final RoomRepository roomRepository;
 
+    @Transactional
     public void processPaymentUpdate(BankTransferPaymentEvent event) {
 
         log.info("Bank Transfer Payment Event Received, paymentId: {}, debtorAccount:{}, amount:{}",
@@ -33,6 +35,7 @@ public class BankTransferPaymentService {
                     ExceptionType.BAD_REQUEST);
         }
 
+        //read if the room is present
         Room room = roomRepository.findByReservationId(reservationId)
                 .orElseThrow(() -> {
                     log.error("No reservation found for reservationId: '{}' from payment event paymentId: '{}'",
@@ -49,6 +52,7 @@ public class BankTransferPaymentService {
                     ExceptionType.BAD_REQUEST);
         }
 
+        //check the status
         if (Status.CONFIRMED == room.getStatus()) {
             log.warn("Reservation: '{}' is already CONFIRMED. Duplicate payment event paymentId: '{}' to be ignored.",
                     reservationId, event.getPaymentId());
@@ -63,7 +67,9 @@ public class BankTransferPaymentService {
                     ExceptionType.BAD_REQUEST);
         }
 
+        //modify the status
         room.setStatus(Status.CONFIRMED);
+        //write the new status to db
         roomRepository.save(room);
 
         log.info("Reservation: '{}' successfully CONFIRMED via BANK_TRANSFER Payment Mode, paymentId: '{}', e2eId: '{}'",

@@ -16,6 +16,9 @@ import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
+/**
+ * Service Implementation class
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -28,6 +31,16 @@ public class ConfirmReservationService {
 
     private final CreditCardPaymentConnector creditCardPaymentConnector;
 
+    /**
+     * The service implementation to confirmt he room reservation
+     * <p>
+     * Avoiding @Transactional here. This method calls external API (CreditCardPaymentApi) mid-flow.
+     * Wrapping that in a transaction would hold an open DB connection during the entire network round-trip,
+     * which is wasteful and can exhaust the connection pool (default used with in-mem H2 database).
+     *
+     * @param room the Room entity
+     * @return {@link Room} updated Room entity based on reservation details
+     */
     public Room confirmReservation(Room room) {
 
         validate(room);
