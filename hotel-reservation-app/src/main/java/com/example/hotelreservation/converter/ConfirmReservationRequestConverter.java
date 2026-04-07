@@ -8,6 +8,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
+/**
+ * Converter for the request object that converts openapi model to entity
+ */
 @Slf4j
 @Component
 public class ConfirmReservationRequestConverter implements Converter<ConfirmReservationRequest, Room> {

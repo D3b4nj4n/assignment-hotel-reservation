@@ -18,6 +18,9 @@ import org.springframework.web.client.RestClient;
 
 import java.net.SocketTimeoutException;
 
+/**
+ * Implementation of the connector to consume credit-card-payment-api
+ */
 @Slf4j
 @Component
 public class CreditCardPaymentConnector {
@@ -27,13 +30,31 @@ public class CreditCardPaymentConnector {
     private static final int TIMEOUT_MS = 5_000;
     private static final int MAX_ATTEMPTS = 5;
     private static final long INITIAL_BACKOFF_MS = 500L;
-    private static final double BACKOFF_MULTIPLIER = 3;
-    private static final long MAX_BACKOFF_MS = 8_000L;
+    private static final double BACKOFF_MULTIPLIER = 2;
+    private static final long MAX_BACKOFF_MS = 10_000L;
 
     private final RestClient restClient;
     private final RetryTemplate retryTemplate;
 
 
+    /**
+     * Constructor that builds RetryTemplate which is used in conjunction with RestClient
+     * The retryTemplate is used to implement retry mechanism for calling the api with attributes
+     * <ul>
+     *     <li>Default timeout of the api - 5s</li>
+     *     <li>Maximum Retry attempts - 5</li>
+     *     <li>Initial backoff - 500ms</li>
+     *     <li>Backoff multiplier - 2</li>
+     *     <li>Maximum backoff period - 10s</li>
+     * </ul>
+     * <p>
+     * If no connectivity is established with the api within 5ms, then it is timed out.
+     * In case of no response received, it will retry after 500ms, going gradually upwards by 2x for each next retry
+     * Once all retries are exhausted, throw an exception
+     *
+     * @param restClientBuilder the RestClient.Builder object
+     * @param baseUrl           the url where the api is hosted
+     */
     public CreditCardPaymentConnector(RestClient.Builder restClientBuilder, @Value("${credit-card-payment-api.base-url}") String baseUrl) {
 
         SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
@@ -57,6 +78,12 @@ public class CreditCardPaymentConnector {
                 .build();
     }
 
+    /**
+     * Checks if timeout is applicable due to SocketTimeoutException
+     *
+     * @param ex ResourceAccessException object reference which is validated for timeout
+     * @return if timeout is applicable
+     */
     private static boolean isTimeout(ResourceAccessException ex) {
 
         Throwable cause = ex.getCause();
@@ -65,6 +92,12 @@ public class CreditCardPaymentConnector {
                 && cause.getMessage().toLowerCase().contains("timeout"));
     }
 
+    /**
+     * Retrieve the payment status from the credit-card-payment-api based on payment reference
+     *
+     * @param paymentReference the reference to the payment
+     * @return {@link PaymentStatusResponse} the response received from the api
+     */
     public PaymentStatusResponse getPaymentStatus(String paymentReference) {
 
         log.info("calling credit-card-payment-api for paymentReference {}", paymentReference);
@@ -74,6 +107,7 @@ public class CreditCardPaymentConnector {
         request.setPaymentReference(paymentReference);
 
         try {
+            //call the api based on the retryTemplate configurations
             return retryTemplate.execute(ctx -> doGetPaymentStatus(request, traceId));
         } catch (ResourceAccessException ex) {
             if (isTimeout(ex)) {
@@ -94,6 +128,13 @@ public class CreditCardPaymentConnector {
 
     }
 
+    /**
+     * Actual invocation of the credit-card-payment-api
+     *
+     * @param request the request object to be passed
+     * @param traceId to trace the request end-to-end
+     * @return {@link PaymentStatusResponse} response received from the api invocation
+     */
     private PaymentStatusResponse doGetPaymentStatus(PaymentStatusRetrievalRequest request, String traceId) {
 
         return restClient.post()

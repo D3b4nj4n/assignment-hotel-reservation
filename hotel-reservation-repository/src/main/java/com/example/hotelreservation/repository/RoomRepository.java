@@ -12,11 +12,21 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Repository for Room entity
+ */
 @Repository
 public interface RoomRepository extends JpaRepository<Room, String> {
 
+    /**
+     * Find reservation by the reservationId
+     * If no reservation is found, provide null
+     *
+     * @param reservationId unique id of the reservation to be used as search filter
+     * @return {@link Optional<Room>} optional Room entity found
+     */
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-        // to block other threads until the transaction commits
+    // to block other threads until the transaction commits
     Optional<Room> findByReservationId(String reservationId);
 
     /**

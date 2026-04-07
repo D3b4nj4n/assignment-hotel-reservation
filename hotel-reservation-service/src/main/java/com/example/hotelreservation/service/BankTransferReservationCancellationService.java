@@ -22,13 +22,13 @@ import java.util.List;
  * <ul>
  *     <li>has PaymentMode {@code BANK_TRANSFER}</li>
  *     <li>still has Status {@code PENDING_PAYMENT}</li>
- *     <li>has a starte date that is today or earlier, i.e., 2-day deadline has passed</li>
+ *     <li>has a start date that is today or earlier, i.e., 2-day deadline has passed</li>
  * </ul>
  */
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class BankTransferCancellationService {
+public class BankTransferReservationCancellationService {
 
     private final RoomRepository roomRepository;
 

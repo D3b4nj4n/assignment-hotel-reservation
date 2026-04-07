@@ -9,6 +9,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.Locale;
 
+/**
+ * Converter for the response object that converts entity to openapi model
+ */
 @Slf4j
 @Component
 public class ConfirmReservationResponseConverter implements Converter<Room, ConfirmReservationResponse> {
@@ -22,4 +25,5 @@ public class ConfirmReservationResponseConverter implements Converter<Room, Conf
         return response;
 
     }
+
 }

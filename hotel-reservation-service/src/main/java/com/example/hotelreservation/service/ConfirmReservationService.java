@@ -17,7 +17,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
 /**
- * Service Implementation class
+ * Service Implementation class that handles the logic for processing the room reservation
  */
 @Slf4j
 @Service
@@ -47,13 +47,21 @@ public class ConfirmReservationService {
 
         room.setReservationId(generateUniqueReservationId());
         switch (room.getPaymentMode()) {
-            case CASH -> room.setStatus(Status.CONFIRMED);
-            case BANK_TRANSFER -> room.setStatus(Status.PENDING_PAYMENT);
-            case CREDIT_CARD -> processReservationForCreditCard(room);
+            case CASH -> room.setStatus(Status.CONFIRMED); //immediately confirm the reservation
+            case BANK_TRANSFER ->
+                    room.setStatus(Status.PENDING_PAYMENT); //set status to PENDING_PAYMENT, handle the processing based on event listener separately
+            case CREDIT_CARD ->
+                    processReservationForCreditCard(room); //call credt-card-payment-api and process accordingly
         }
         return roomRepository.save(room);
     }
 
+    /**
+     * Generates a unique reservationId
+     * based on the pattern that it should be a random 8-character alphanumeric string
+     *
+     * @return {@link String} unique reservationId
+     */
     private String generateUniqueReservationId() {
         String id;
         do {
@@ -66,6 +74,17 @@ public class ConfirmReservationService {
         return id;
     }
 
+    /**
+     * Processes the reservation by calling credit-card-payment-api
+     * If any issue observed while consuming the api, throw applicable exception
+     * Otherwise, process the reservation based on payment status:
+     * <ul>
+     *     <li>If paymentStatus is CONFIRMED, then confirm the reservation</li>
+     *     <li>If paymentStatus is REJECTED, then thrown applicable exception</li>
+     * </ul>
+     *
+     * @param room the Room entity to process
+     */
     private void processReservationForCreditCard(Room room) {
 
         PaymentStatusResponse paymentStatus;
@@ -90,6 +109,12 @@ public class ConfirmReservationService {
         }
     }
 
+    /**
+     * Validates the period of reservation
+     * If the endDate is more than 30 days of the startDate, then an exception is thrown
+     *
+     * @param room the Room entity to be validated
+     */
     private void validate(Room room) {
         LocalDate startDate = room.getStartDate();
         LocalDate endDate = room.getEndDate();

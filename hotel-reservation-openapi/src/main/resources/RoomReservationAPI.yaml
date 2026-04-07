@@ -119,6 +119,7 @@ components:
 
     ConfirmReservationResponse:
       type: object
+      description: Response body
       properties:
         reservationId:
           type: string

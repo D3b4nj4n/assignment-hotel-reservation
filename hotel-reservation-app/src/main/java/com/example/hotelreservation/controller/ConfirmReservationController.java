@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Rest Controller that implements the Api endpoint
+ */
 @RestController
 @RequiredArgsConstructor
 @Slf4j
@@ -35,8 +38,9 @@ public class ConfirmReservationController implements ConfirmReservationApi {
     ) {
 
         Room roomEntity = requestConverter.convert(confirmReservationRequest);
-        Room room = confirmReservationService.confirmReservation(roomEntity);
-        ConfirmReservationResponse response = responseConverter.convert(room);
-        return ResponseEntity.ok().body(response);
+        Room savedRoom = confirmReservationService.confirmReservation(roomEntity);
+        ConfirmReservationResponse response = responseConverter.convert(savedRoom);
+        return ResponseEntity.ok(response);
     }
+
 }
