@@ -15,15 +15,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 /**
- * Scheduled service that automatically cancels the BANK_TRANSFER reservation
- * when the full payment amount has not been received at least 2 days before the reservation start date
- *
- * <p>This scheduled job runs every day at midnight (as configured via cron) and cancels any reservation that:
- * <ul>
- *     <li>has PaymentMode {@code BANK_TRANSFER}</li>
- *     <li>still has Status {@code PENDING_PAYMENT}</li>
- *     <li>has a start date that is today or earlier, i.e., 2-day deadline has passed</li>
- * </ul>
+ * Implementation of the scheduler to cancel reservation if amount is not paid within 2 days of start date
  */
 @Slf4j
 @Service
@@ -35,7 +27,17 @@ public class BankTransferReservationCancellationService {
     @Value("${reservation.cancellation.deadlineDays:2}")
     private int deadlineDays;
 
-    //Runs every night at 00:00 or specified otherwise in properties
+    /**
+     * Scheduled service that automatically cancels the BANK_TRANSFER reservation
+     * when the full payment amount has not been received at least 2 days before the reservation start date
+     *
+     * <p>This scheduled job runs every day at midnight (as configured via cron) and cancels any reservation that:
+     * <ul>
+     *     <li>has PaymentMode {@code BANK_TRANSFER}</li>
+     *     <li>still has Status {@code PENDING_PAYMENT}</li>
+     *     <li>has a start date that is today or earlier, i.e., 2-day deadline has passed</li>
+     * </ul>
+     */
     @Scheduled(cron = "${reservation.cancellation.cron:0 0 0 * * *}")
     @Transactional
     public void cancelUnpaidBankTransferReservations() {
