@@ -1,6 +1,6 @@
 # Hotel Reservation Service
 
-A Spring Boot microservice for managing hotel room reservations for Marvel Hospitality Management Corporation. It handles reservation confirmation via REST, payment processing through Credit Card and Kafka-based Bank Transfer events, and automatic cancellation of unpaid reservations.
+A Spring Boot service for managing hotel room reservations for Marvel Hospitality Management Corporation. It handles reservation confirmation via REST, payment processing through Credit Card and Kafka-based Bank Transfer events, and automatic cancellation of unpaid reservations.
 
 ---
 
