@@ -3,6 +3,7 @@ package com.example.hotelreservation.controller;
 import com.example.hotelreservation.openapi.model.*;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -95,6 +96,21 @@ class ConfirmReservationControllerIT {
                 restTemplate.postForEntity(ENDPOINT, request, Void.class);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    }
+
+    @Test
+    @Timeout(10)
+    void shouldReturn504_whenCreditCardApiExceedsTimeout() {
+
+        wireMock.stubFor(post(urlEqualTo("/host/credit-card-payment-api/payment-status"))
+                .willReturn(okJson("{\"status\":\"CONFIRMED\"}").withFixedDelay(6000)));
+
+        ConfirmReservationRequest request = buildRequest(PaymentMode.CREDIT_CARD, "CC-REF-TIMEOUT");
+
+        ResponseEntity<Void> response =
+                restTemplate.postForEntity(ENDPOINT, request, Void.class);
+
+        assertEquals(HttpStatus.GATEWAY_TIMEOUT, response.getStatusCode());
     }
 
     @Test

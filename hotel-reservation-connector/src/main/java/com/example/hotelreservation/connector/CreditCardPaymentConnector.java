@@ -29,9 +29,9 @@ public class CreditCardPaymentConnector {
 
     private static final int TIMEOUT_MS = 5_000;
     private static final int MAX_ATTEMPTS = 5;
-    private static final long INITIAL_BACKOFF_MS = 500L;
-    private static final double BACKOFF_MULTIPLIER = 2;
-    private static final long MAX_BACKOFF_MS = 10_000L;
+    private static final long INITIAL_BACKOFF_MS = 200L;
+    private static final double BACKOFF_MULTIPLIER = 4;
+    private static final long MAX_BACKOFF_MS = 8_000L;
 
     private final RestClient restClient;
     private final RetryTemplate retryTemplate;
@@ -43,13 +43,13 @@ public class CreditCardPaymentConnector {
      * <ul>
      *     <li>Default timeout of the api - 5s</li>
      *     <li>Maximum Retry attempts - 5</li>
-     *     <li>Initial backoff - 500ms</li>
-     *     <li>Backoff multiplier - 2</li>
-     *     <li>Maximum backoff period - 10s</li>
+     *     <li>Initial backoff - 200ms</li>
+     *     <li>Backoff multiplier - 4</li>
+     *     <li>Maximum backoff period - 8s</li>
      * </ul>
      * <p>
      * If no connectivity is established with the api within 5ms, then it is timed out.
-     * In case of no response received, it will retry after 500ms, going gradually upwards by 2x for each next retry
+     * In case of no response received, it will retry after 200ms, going gradually upwards by 4x for each next 5 retries
      * Once all retries are exhausted, throw an exception
      *
      * @param restClientBuilder the RestClient.Builder object
