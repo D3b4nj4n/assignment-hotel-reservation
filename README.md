@@ -256,27 +256,27 @@ spring:
 
 Using Docker:
 
+- Generate a cluster ID
+
 ```bash
-docker run -d --name kafka \
-  -p 9092:9092 \
-  -e KAFKA_NODE_ID=1 \
-  -e KAFKA_PROCESS_ROLES=broker,controller \
-  -e KAFKA_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093 \
-  -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092 \
-  -e KAFKA_CONTROLLER_QUORUM_VOTERS=1@localhost:9093 \
-  -e KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT \
-  -e KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1 \
-  -e KAFKA_CONTROLLER_LISTENER_NAMES=CONTROLLER \
-  apache/kafka:latest
+docker run --rm apache/kafka /opt/kafka/bin/kafka-storage.sh random-uuid
 ```
 
-Alternatively, download Apache Kafka from https://kafka.apache.org/downloads and run:
-
-**Note**: This is my preferred approach to test it
+Provide the generated ID in the CLUSTER_ID parameter (eg., O-ehWAQNQU6bWgngFNa5uw)
 
 ```bash
-# Start Kafka with KRaft (no Zookeeper needed in Kafka 3.3+)
-bin/kafka-server-start.sh config/kraft/server.properties
+docker run -d --name kafka \
+    -p 9092:9092 \
+    -e CLUSTER_ID=ehWAQNQU6bWgngFNa5uw \
+    -e KAFKA_NODE_ID=1 \
+    -e KAFKA_PROCESS_ROLES=broker,controller \
+    -e KAFKA_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093 \
+    -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092 \
+    -e KAFKA_CONTROLLER_QUORUM_VOTERS=1@localhost:9093 \
+    -e KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT \
+    -e KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1 \
+    -e KAFKA_CONTROLLER_LISTENER_NAMES=CONTROLLER \
+    apache/kafka:latest
 ```
 
 ### Step 2 — Create the topic
@@ -284,12 +284,8 @@ bin/kafka-server-start.sh config/kraft/server.properties
 ```bash
 # Using Docker
 docker exec kafka /opt/kafka/bin/kafka-topics.sh \
-  --create --topic bank-transfer-payment-update \
-  --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
-
-# Using local Kafka installation
-bin/kafka-topics.sh --create --topic bank-transfer-payment-update \
-  --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
+    --create --topic bank-transfer-payment-update \
+    --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
 ```
 
 ### Step 3 — Verify the topic exists
@@ -298,9 +294,6 @@ bin/kafka-topics.sh --create --topic bank-transfer-payment-update \
 # Docker
 docker exec kafka /opt/kafka/bin/kafka-topics.sh \
   --list --bootstrap-server localhost:9092
-
-# Local
-bin/kafka-topics.sh --list --bootstrap-server localhost:9092
 ```
 
 ### Kafka Event Format
@@ -320,36 +313,49 @@ The listener expects messages on `bank-transfer-payment-update` as JSON:
 
 The last 8 characters (after the space) are the reservation ID used to look up the booking in the database.
 
-### Publish a Test Event Manually
+### Step 4 - Publish a Test Event Manually
 
 ```bash
 # Docker
 docker exec -it kafka /opt/kafka/bin/kafka-console-producer.sh \
-  --topic bank-transfer-payment-update \
-  --bootstrap-server localhost:9092 \
-  --property value.serializer=org.apache.kafka.common.serialization.StringSerializer
+    --topic bank-transfer-payment-update \
+    --bootstrap-server localhost:9092
 
 # Then type (or paste) the JSON payload and press Enter:
-{"paymentId":"PAY-001","debtorAccountNumber":"NL91ABNA0417164300","amountReceived":"250.00","transactionDescription":"E2EREFERAB <reservationId>"}
+{"paymentId":"PAY-001","debtorAccountNumber":"NL91ABNA0417164300","amountReceived":"250.00","transactionDescription":"E2EREFERAB AB12CD34"}
+
 ```
 
 Replace `<reservationId>` with an actual ID returned by the REST endpoint.
+
+### Step 5 — Verify CONFIRMED in H2 (/h2-console)
+
+Console url: http://localhost:8080/roomreservationapi/v1/h2-console
+
+```sql
+SELECT * FROM ROOM WHERE RESERVATION_ID = 'AB12CD34';
+-- check whether STATUS = CONFIRMED
+```
+
+Application logs should show successful INFO message in below format:
+
+INFO  BankTransferPaymentService - Reservation: 'AB12CD34' successfully CONFIRMED via BANK_TRANSFER Payment Mode, paymentId: 'BT-REF-001', e2eId: 'E2EREFERAB'
 
 ---
 
 ## 7. Database Management
 
-The application uses an **H2 in-memory database**. No installation is required.
+The application uses a **H2 in-memory database**. No installation is required.
 
 ### Key Facts
 
-| Property        | Value                                                               |
-|-----------------|---------------------------------------------------------------------|
-| JDBC URL        | `jdbc:h2:mem:mydb;DB_CLOSE_DELAY=-1`                                |
-| Username        | `sa`                                                                |
-| Password        | `password`                                                          |
-| Dialect         | `org.hibernate.dialect.H2Dialect`                                   |
-| Schema creation | Automatic (Hibernate DDL)                                           |
+| Property        | Value                                                              |
+|-----------------|--------------------------------------------------------------------|
+| JDBC URL        | `jdbc:h2:mem:mydb;DB_CLOSE_DELAY=-1`                               |
+| Username        | `sa`                                                               |
+| Password        |                                                           |
+| Dialect         | `org.hibernate.dialect.H2Dialect`                                  |
+| Schema creation | Automatic (Hibernate DDL)                                          |
 | Persistence     | **None** — data is lost on restart as it uses in-memory H2 database |
 
 **Note:** A persistence unit using real database implementation is recommended. 
