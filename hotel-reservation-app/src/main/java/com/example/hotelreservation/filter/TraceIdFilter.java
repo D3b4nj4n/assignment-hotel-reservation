@@ -17,6 +17,18 @@ public class TraceIdFilter extends OncePerRequestFilter {
     public static final String TRACE_ID_HEADER = "Trace-Id";
     public static final String TRACE_ID_MDC_KEY = "traceId";
 
+//     2. Scoped Values (Java 25 JEP 506) — Replace MDC for TraceId
+//
+//    Current TraceIdFilter uses ThreadLocal/MDC which breaks across virtual threads. Use Scoped Values:
+//
+//    public static final ScopedValue<String> TRACE_ID = ScopedValue.newInstance();
+//
+//    // In filter:
+//  ScopedValue.runWhere(TRACE_ID, traceId, () -> filterChain.doFilter(request, response));
+//    Benefit: Immutable, GC-safe, propagates correctly through virtual threads and structured concurrency.
+
+
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {

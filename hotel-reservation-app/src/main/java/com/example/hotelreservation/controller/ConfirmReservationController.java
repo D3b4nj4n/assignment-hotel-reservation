@@ -45,6 +45,15 @@ public class ConfirmReservationController implements ConfirmReservationApi {
 
         Room roomEntity = requestConverter.convert(confirmReservationRequest);
 
+        // Controller — replace CompletableFuture with StructuredTaskScope
+//        try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {
+//            var task = scope.fork(() -> confirmReservationService.confirm(request));
+//            scope.joinUntil(Instant.now().plusSeconds(10));
+//            scope.throwIfFailed();
+//            return task.get();
+//        }
+
+
         try {
             Room savedRoom = CompletableFuture
                     .supplyAsync(() -> confirmReservationService.confirmReservation(roomEntity))

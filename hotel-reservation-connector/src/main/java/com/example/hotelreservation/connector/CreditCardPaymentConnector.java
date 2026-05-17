@@ -25,6 +25,23 @@ import java.net.SocketTimeoutException;
 @Component
 public class CreditCardPaymentConnector {
 
+//    Current CreditCardPaymentConnector uses RestTemplate + manual RetryTemplate. Replace with HTTP Interfaces + RestClient:
+//
+//    @HttpExchange("/credit-card-payments")
+//    public interface CreditCardPaymentClient {
+//        @PostExchange
+//        CreditCardPaymentResponse chargeCard(@RequestBody CreditCardPaymentRequest req);
+//    }
+//
+//    // Registration with retry via Spring Retry interceptor
+//    RestClient restClient = RestClient.builder()
+//            .baseUrl(baseUrl)
+//            .requestInterceptor(retryInterceptor)
+//            .build();
+//  HttpServiceProxyFactory.builderFor(RestClientAdapter.create(restClient)).build();
+
+
+
     public static final String TRACE_ID_MDC_KEY = "traceId";
 
     private static final int TIMEOUT_MS = 5_000;
